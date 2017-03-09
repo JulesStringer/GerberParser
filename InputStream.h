@@ -24,6 +24,7 @@ public:
 	void SkipToEndBlock();
 	void SkipToEndExtended();
 	void SkipToNextLine();
+	void SkipWhiteSpace();
 	double GetXCoordinate();
 	double GetYCoordinate();
 	double GetSize();
@@ -32,5 +33,6 @@ public:
 	void GetCoordinateFormat();
 	void SetUnits(double d);
 	bool AtEndExtended();
+	bool GetMatching(const char* pszMatch);
 };
 

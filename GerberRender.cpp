@@ -12,6 +12,7 @@ CGerberRender::CGerberRender()
 	: m_X(0)
 	, m_Y(0)
 	, m_hFile(INVALID_HANDLE_VALUE)
+	, m_nLineStringRenderMethod(0)
 {
 }
 CGerberRender::~CGerberRender()
@@ -89,9 +90,32 @@ void CGerberRender::Polygon(CWKBGeometry* pGeom, CGerberState* pState)
 		Print("%f %f\r\n", pPt->x + m_OffsetX, pPt->y + m_OffsetY);
 	}
 }
+void CGerberRender::Point(CWKBGeometry* pGeom, CGerberState* pState)
+{
+	throw "Point not implemented";
+}
+void CGerberRender::LineString(CWKBGeometry* pLS, CGerberState* pState)
+{
+	throw "Linestring not implemented";
+}
 void CGerberRender::Circle(double X, double Y, double dRadius, CGerberState* pState)
 {
 	Print("Circle radius %f (%f,%f)", dRadius, X + m_OffsetX, Y + m_OffsetY);
+}
+void CGerberRender::Geometry(CWKBGeometry* pGeometry, CGerberState* pState)
+{
+	switch (pGeometry->Type())
+	{
+	case wkbPoint:
+		Point(pGeometry, pState);
+		break;
+	case wkbLineString:
+		LineString(pGeometry, pState);
+		break;
+	case wkbPolygon:
+		Polygon(pGeometry, pState);
+		break;
+	}
 }
 void CGerberRender::AddLayer(CLayer* pLayer)
 {
@@ -155,4 +179,8 @@ void CGerberRender::Rectangle(CRectangle* pRect, CGerberState* pState)
 	Pt.x = pRect->MinX();
 	geom.Add((unsigned char*)&Pt, sizeof(Pt));
 	Polygon(&geom, pState);
+}
+void CGerberRender::SetLineStringRenderMethod(int nLineStringRenderMethod)
+{
+	m_nLineStringRenderMethod = nLineStringRenderMethod;
 }

@@ -118,6 +118,15 @@ bool CInputStream::Terminator(const char* pszTerminator)
 {
 	return AtEOF() || strncmp(m_strText.c_str() + m_nChar, pszTerminator, strlen(pszTerminator)) == 0;
 }
+bool CInputStream::GetMatching(const char* pszMatch)
+{
+	if (strncmp(m_strText.c_str() + m_nChar, pszMatch, strlen(pszMatch)) == 0)
+	{
+		m_nChar += strlen(pszMatch);
+		return true;
+	}
+	return false;
+}
 void CInputStream::SkipToEndBlock()
 {
 	while (!AtEOF() && m_strText[m_nChar] != '*')
@@ -147,6 +156,13 @@ void CInputStream::SkipToNextLine()
 		m_nChar++;
 	}
 	while (!AtEOF() && (m_strText[m_nChar] == '\r' || m_strText[m_nChar] == '\n') )
+	{
+		m_nChar++;
+	}
+}
+void CInputStream::SkipWhiteSpace()
+{
+	while (!AtEOF() && m_strText[m_nChar] <= ' ')
 	{
 		m_nChar++;
 	}
