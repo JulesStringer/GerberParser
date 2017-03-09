@@ -7,6 +7,7 @@ class CGerberRenderDXF :
 	unsigned int m_ModelSpaceHandle;
 	unsigned int m_PaperSpaceHandle;
 protected:
+	void OutputTAG(int nTag);
 	void OutputTAG(int nTag, const char* pszValue);
 	void OutputTAG(int nTag, int nValue);
 	void OutputTAG(int nTag, unsigned int nValue);

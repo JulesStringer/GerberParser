@@ -9,29 +9,51 @@ CGerberRenderDXF::CGerberRenderDXF()
 CGerberRenderDXF::~CGerberRenderDXF()
 {
 }
+void CGerberRenderDXF::OutputTAG(int nTag)
+{
+	if (nTag >= 100)
+	{
+		Print("%d\r\n", nTag);
+	}
+	else if (nTag >= 10)
+	{
+		Print(" %d\r\n", nTag);
+	}
+	else
+	{
+		Print("  %d\r\n", nTag);
+	}
+}
 void CGerberRenderDXF::OutputTAG(int nTag, const char* pszValue)
 {
-	Print("  %d\r\n", nTag);
+	OutputTAG(nTag);
 	Print("%s\r\n", pszValue);
 }
 void CGerberRenderDXF::OutputTAG(int nTag, int nValue)
 {
-	Print("  %d\r\n", nTag);
+	OutputTAG(nTag);
 	Print("%d\r\n", nValue);
 }
 void CGerberRenderDXF::OutputTAG(int nTag, unsigned int nValue)
 {
-	Print("  %d\r\n", nTag);
+	OutputTAG(nTag);
 	Print("%d\r\n", nValue);
 }
 void CGerberRenderDXF::OutputTAG(int nTag, double dValue)
 {
-	Print("  %d\r\n", nTag);
-	Print("%f\r\n", dValue);
+	OutputTAG(nTag);
+	if (dValue == 0.0)
+	{
+		Print("0.0\r\n");
+	}
+	else
+	{
+		Print("%f\r\n", dValue);
+	}
 }
 void CGerberRenderDXF::OutputHandle(int nTag, unsigned int nValue)
 {
-	Print("  %d\r\n", nTag);
+	OutputTAG(nTag);
 	Print("%x\r\n", nValue);
 }
 void CGerberRenderDXF::BeginSection(const char* pszValue)
@@ -419,13 +441,49 @@ void CGerberRenderDXF::HollowPolygon(WKBPolygon* pPoly, CGerberState* pState)
 
 	if (pLayer->Include())
 	{
-		unsigned char n;
-		GM_POINT* pLast = pPoly->rings[0].Points;
-		for (n = 1; n < pPoly->rings[0].numPoints;n++)
+		if (m_nLineStringRenderMethod == 0 )
 		{
-			GM_POINT* pPt = pPoly->rings[0].Points + n;
-			Line(strLayer.c_str(), color, pLast->x, pLast->y, pPt->x, pPt->y);
-			pLast = pPt;
+			unsigned char n;
+			GM_POINT* pLast = pPoly->rings[0].Points;
+			for (n = 1; n < pPoly->rings[0].numPoints;n++)
+			{
+				GM_POINT* pPt = pPoly->rings[0].Points + n;
+				Line(strLayer.c_str(), color, pLast->x, pLast->y, pPt->x, pPt->y);
+				pLast = pPt;
+			}
+		}
+		else
+		{
+			switch (m_nLineStringRenderMethod)
+			{
+			case 1:  // Polyline
+				BeginEntity("POLYLINE", strLayer.c_str(), "AcDbPolyline", pLayer->ColourIndex());
+				break;
+			case 2:  // LWPolyline
+				BeginEntity("LWPOLYLINE", strLayer.c_str(), "AcDbPolyline", pLayer->ColourIndex());
+				break;
+			default:
+				throw "Unknown LineRenderMethod";
+			}
+			long nPoints = pPoly->rings[0].numPoints;
+			if (pPoly->rings[0].Points[0].x == pPoly->rings[0].Points[nPoints - 1].x &&
+				pPoly->rings[0].Points[0].y == pPoly->rings[0].Points[nPoints - 1].y)
+			{
+//				nPoints--;
+				OutputTAG(90, (int)nPoints);
+				OutputTAG(70, 1);  // Closed linestring
+			}
+			else
+			{
+				OutputTAG(90, (int)nPoints);
+			}
+			//			OutputTAG(43, 1);  // Fixed line width
+			unsigned char n;
+			for (n = 0; n < nPoints;n++)
+			{
+				GM_POINT* pPt = pPoly->rings[0].Points + n;
+				Coordinate(0, pPt->x + m_OffsetX, pPt->y + m_OffsetY, 0.0);
+			}
 		}
 	}
 }
