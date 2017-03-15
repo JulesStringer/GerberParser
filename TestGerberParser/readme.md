@@ -19,6 +19,74 @@ Each argument has a tag beginning with - which may be followed by one or more fu
 
 ## -params parameterfile
 
+The root node of the parameter file is config. 
+Beneath config are:
+|Element|Description|
+|-------|:-----------|
+|folders|has either a path element which specified another XML file which defines folders, or one or more folder nodes.|
+|drawings|contains one or more drawing elements that appear in the output|
+|inflate|default distance by which part outlines are inflated|
+|deflate|default distance by which pads are deflated|
+|minsize|minimum diameter for mounting holes|
+|cutline_inflate|amount by which the cutline (bounding box of a drawing) is inflated|
+
+#### Example parameter file
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <!-- all dimensions are in millimetres -->
+  <!-- deflate is subtracted from the size of aperatures when drawing the paste mask-->
+  <deflate>0.05</deflate>
+  <!-- the bounding box of part outlines is inflated by the value of the inflate parameter -->
+  <inflate>0.2</inflate>
+  <!-- minsize specifies the minimum size of a drill holes to be included the drills pass -->
+  <minsize>2.9</minsize>
+  <!-- These global defaults can be overridden for individual paste , parts and drills elements -->
+  <cutline_inflate>1</cutline_inflate>
+  <!-- Set of folder paths to operate on -->
+  <folders>
+    <path>C:\DEV\ElectronicsProduction\TestGerberParser\Folders.xml</path>
+  </folders>
+  <!-- Specify each drawing to appear on the sheet -->
+  <drawings>
+    <drawing>
+      <folder>1</folder>
+      <X>35</X>
+      <Y>50</Y>
+      <paste/>
+      <include>
+        <path>C:\DEV\ElectronicsProduction\Stencil_Jig\holes.xml</path>
+      </include>
+      <include>
+        <path>C:\DEV\ElectronicsProduction\Stencil_Jig\cutline.xml</path>
+      </include>
+    </drawing>
+  </drawings>
+</config>
+
+```
+
+### folders file
+
+```
+    <folder>
+      <ID>4</ID>
+      <path>C:\DEV\HomeAutomation\CAM\CAM_Temperature\CAM_Temperature</path>
+      <parts>
+        <part>
+          <ID>OP1</ID>
+          <W>0</W>
+          <H>1</H>
+        </part>
+      </parts>
+    </folder>
+
+```
+### folder node
+
+### drawing node
+
 
 ## -Polyline and -LWPolyline
 If neither of these is specified polygons and polylines are output as line records. If these files are viewed in LaserCut a polygon will appear as separate lines, which need to be joined together.
