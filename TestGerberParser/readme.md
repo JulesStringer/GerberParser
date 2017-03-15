@@ -34,29 +34,16 @@ Each layer is specified by a layer element beneath a layers element, example
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
-
--<layers>
-
-
--<layer>
-
-<name>Outline</name>
-
-<colourindex>2</colourindex>
-
-<regex>.*Draw board outline.*</regex>
-
-</layer>
-
-
--<layer>
-
-<name>Pads</name>
-
-<colourindex>3</colourindex>
-
-<regex>.*Draw Parts.*</regex>
-
-</layer>
+ <layers>
+  <layer>
+   <name>Outline</name>
+   <colourindex>2</colourindex>
+   <regex>.*Draw board outline.*</regex>
+  </layer>
+  <layer>
+   <name>Pads</name>
+   <colourindex>3</colourindex>
+   <regex>.*Draw Parts.*</regex>
+  </layer>
 .....
 ```
