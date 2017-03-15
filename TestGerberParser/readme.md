@@ -20,7 +20,7 @@ Each argument has a tag beginning with - which may be followed by one or more fu
 ## -params parameterfile
 
 The root node of the parameter file is config. 
-Beneath config are:
+Beneath config are
 |Element|Description|
 |-------|:-----------|
 |folders|has either a path element which specified another XML file which defines folders, or one or more folder nodes|
