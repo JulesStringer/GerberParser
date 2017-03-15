@@ -28,7 +28,7 @@ Beneath config are:
 |drawings|contains one or more drawing elements that appear in the output|
 |inflate|default distance by which part outlines are inflated|
 |deflate|default distance by which pads are deflated|
-|minsize|minimum diameter for mounting holes|
+|minsize|minimum diameter for a hole in the drills file to be output as a mounting holes|
 |cutline_inflate|amount by which the cutline (bounding box of drawing) is inflated|
 
 #### Example parameter file
@@ -67,6 +67,9 @@ Beneath config are:
 </config>
 
 ```
+The above file draws one drawing offset by 35,50 from the origin of the drawing.
+The drawing includes the pads from the paste layer, together with standard graphics for holes and cutline.
+This enables a solder paste stencil to be produced with standard holes and cut line to match the jig that holds the stencil.
 
 ### folders file
 
@@ -89,21 +92,94 @@ The folder node has
 
 |Element|Description|
 |-------|:-----------|
-|ID|Unique Integer Identifier used to identify folder|
+|ID|Unique Integer used to identify folder|
 |path|Path of folder contain gerber and drill files|
 |parts|optional node beneath which are part nodes defining override outlines of parts|
+
+The path specified in the folder node should contain top_paste_mask.grb and drill_file.drl
 
 Each part node has
 
 |Element|Description|
 |-------|:-----------|
 |ID|ID or part reference as it appears in comment text in the paste gerber|
-|W|Override width|
-|H|Override height|
+|W|Distance by which the width of the outline of this part is inflated|
+|H|Distance by which the height of the outline of this part is inflated|
 
+## drawings node
+The drawings node has drawing and / or include nodes beneath it.
+
+### include node
+
+The has a path node beneath it. The path node contains the path of a file which has a drawings node beneath config, which contains the drawings to be drawn.
 
 ### drawing node
 
+A number of gerbers or other graphics can be placed in the output. This enables several masks to be output to a single DXF.
+Each drawing is defined by a drawing node which has:
+
+|Element|Description|
+|-------|:-----------|
+|folder|ID of folder to be drawn. If this is not specified some graphics should be specified for the node.|
+|X|X offset that is added to every coordinate output|
+|Y|Y offset that is added to every coordinate output|
+|cutlineinflate|amount by which the cutline is inflated (overrides the default)|
+|inflate|amount by which part outlines are inflated (overrides the default)|
+|parts|draws part outlines for parts identified in the gerber|
+|paste|draws pads from the Pads layer of the gerber file. This can have a deflate node beneath it, if specified this overrides the default|
+|drills|draws holes whose diameter is above minsize to the Mounting_Holes layer|
+|graphics|beneath this are a number of graphic nodes, which specify graphics to be output to the dxf|
+|outline|draws the outline from the gerber to the Outline layer|
+|cutline|draws the bounding box of the graphics in the gerber (inflated by cutlineinflate)|
+|include|beneath this is a path node which specifies the path of a file defining some graphics|
+
+### graphics
+
+The graphics node has one or more elements beneath it that define graphics to be drawn.
+
+These nodes may be:
+
+|Node Name|Description|
+|---------|:-----------|
+|hole|Defines the position, diameter and layer of a hole to be drawn|
+|geometry|Defines a polyline or polygon and layer to be drawn|
+
+#### hole node
+
+This has:
+
+|Element|Description|
+|-------|:-----------|
+|X|X coordinate of centre of hole|
+|Y|Y coordinate of centre of hole|
+|diameter|diameter of hole|
+|layer|layer on which hole is to be drawn|
+
+#### geometry node
+
+This has:
+
+|Element|Description|
+|-------|:-----------|
+|layer|layer on which hole is to be drawn|
+|geometry|geometry specified in Well Known Text (WKT) format|
+
+WKT format is described here: https://en.wikipedia.org/wiki/Well-known_text
+
+WKT is part of the Simple Feature Access specification http://www.opengeospatial.org/standards/sfa
+
+Currently only POINT, LINESTRING and POLYGON types are supported.
+POLYGONs must have a single ring.
+
+### include node under drawing
+
+The include node under drawing defines the path of a file containing graphics definitions and the layer these are to be drawn on.
+It has
+
+|Element|Description|
+|-------|:-----------|
+|path|path of file containing a top level graphics node the defines some graphics.|
+|layer|name of the layer that graphics are to be drawn on|
 
 ## -Polyline and -LWPolyline
 If neither of these is specified polygons and polylines are output as line records. If these files are viewed in LaserCut a polygon will appear as separate lines, which need to be joined together.
