@@ -85,6 +85,22 @@ Beneath config are:
 
 ```
 ### folder node
+The folder node has
+
+|Element|Description|
+|-------|:-----------|
+|ID|Unique Integer Identifier used to identify folder|
+|path|Path of folder contain gerber and drill files|
+|parts|optional node beneath which are part nodes defining override outlines of parts|
+
+Each part node has
+
+|Element|Description|
+|-------|:-----------|
+|ID|ID or part reference as it appears in comment text in the paste gerber|
+|W|Override width|
+|H|Override height|
+
 
 ### drawing node
 
