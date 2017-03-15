@@ -47,3 +47,10 @@ Each layer is specified by a layer element beneath a layers element, example
   </layer>
 .....
 ```
+
+The elements under layer are as follows:
+|Element|Description|
+|-------|:-----------|
+|name|Name of the layer that will appear in the output|
+|colourindex|colour number that will be used for the layer, these are DXF colour indexes as defined here http://sub-atomic.com/~moses/acadcolors.html|
+|regex|Regular expression which is matched against comments in the gerber file. All records in the gerber file following a match are assigned to this layer|
