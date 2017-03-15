@@ -28,7 +28,7 @@ Beneath config are
 |inflate|default distance by which part outlines are inflated|
 |deflate|default distance by which pads are deflated|
 |minsize|minimum diameter for mounting holes|
-|cutline_inflate|amount by which the cutline is inflated|
+|```cutline_inflate```|amount by which the cutline is inflated|
 
 #### Example parameter file
 
