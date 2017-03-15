@@ -23,12 +23,12 @@ The root node of the parameter file is config.
 Beneath config are:
 |Element|Description|
 |-------|:-----------|
-|folders|has either a path element which specified another XML file which defines folders, or one or more folder nodes.|
+|folders|has either a path element which specified another XML file which defines folders, or one or more folder nodes|
 |drawings|contains one or more drawing elements that appear in the output|
 |inflate|default distance by which part outlines are inflated|
 |deflate|default distance by which pads are deflated|
 |minsize|minimum diameter for mounting holes|
-|cutline_inflate|amount by which the cutline (bounding box of a drawing) is inflated|
+|cutline_inflate|amount by which the cutline is inflated|
 
 #### Example parameter file
 
